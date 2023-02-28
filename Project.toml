@@ -1,0 +1,4 @@
+name = "gravitywaveslagrangian"
+uuid = "8f1dc495-8607-41e9-9671-73d2242bae83"
+authors = ["AdamSmithOrlik <adam.smith2214@gmail.com>"]
+version = "0.1.0"
