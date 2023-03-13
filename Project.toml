@@ -2,3 +2,12 @@ name = "gravitywaveslagrangian"
 uuid = "8f1dc495-8607-41e9-9671-73d2242bae83"
 authors = ["AdamSmithOrlik <adam.smith2214@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+SciPy = "ebc72ef8-9537-4fb0-b64e-ac76025fed2d"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
