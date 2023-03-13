@@ -55,6 +55,8 @@ function run_partition(; kwargs...)
     
     # directory 
     data_directory = pwd() * "/data/"
+    isdir(data_directory) ? nothing : mkdir(data_directory)
+
     run_name = kwargs[:Run_name]
     filename = data_directory * run_name * "_insprial_data.h5"
     
