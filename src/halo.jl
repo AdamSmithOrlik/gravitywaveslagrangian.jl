@@ -7,9 +7,8 @@
 ###############################
 
 using Roots
-using PyCall
-np = pyimport("numpy")
-using SciPy
+# using PyCall
+# using SciPy
 
 include("cosmology.jl")
 

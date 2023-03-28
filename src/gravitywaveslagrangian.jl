@@ -1,3 +1,9 @@
+###############################
+# AUTHOR: Adam Smith-Orlik
+# DATE: March 2023
+# DESCRIPTION: Module that runs the binary evolution using the input parameters in "run_dictionary"
+# CONTACT: asorlik@yorku.ca
+###############################
 
 module gravitywaveslagrangian
 
@@ -7,11 +13,11 @@ export run
 
 run_dictionary = Dict(
     # Name of hdf5 produced 
-    :Run_name=>"julia_test",  
+    :Run_name=>"test_strain",  
 
     # Beginning and end radius of inpiral 
     :a_initial=>8.0,  # initial radius in units of r_isco
-    :a_final=>3.0,      # final radius in units of r_isco (where integration stops)
+    :a_final=>5.0,      # final radius in units of r_isco (where integration stops)
         
     # System Parameters 
     :Mbh=>1e5, # Black hole [Msol] 
@@ -19,11 +25,17 @@ run_dictionary = Dict(
     :D=>1e5, # Lumiosity distance 
     :e0=>0.0, # Ellipticity 
     :phi0=>0.0, # Inital angle 
-    
-    # Evolution total orbits and orbital resolution, i.e. time steps per evolution
-    :norbits=>1e6,   # upper limit on number of orbits for total evolution 
-    :t_orbital=>20,   # number of time steps per orbit, i.e. time resolution per orbit 
-    :t_start=>0.0,
+    :lisa_bandwidth=> [1e-5, 1e0], # frequency range for lisa 
+
+    # time parameters 
+    :time_resolution=>1e-6, # resolution of the outoput solution arrays, recommended 1e-8 for GW strain resolution 
+    :t_start=>0.0, # [years]
+    :t_max=>1e6, # [years] upper limit of the time allowed for the evolution to run without terminating 
+    :dt=>0.005, # time steps between t_start and t_max, must be < t_max
+
+    # orbital data 
+    :save_orbital_data=>true, # save the orbital arrays, if false only the strain is saved
+    :orbital_resolution=>1e-6, # used to sample the full resolution arrays by steps round(orbit_res/time_res). Must be greater than time resolution
     
     # Forces included in insprial 
     :gwEmission=>true,

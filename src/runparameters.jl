@@ -44,8 +44,9 @@ function mass_A(; kwargs...)
 end
 
 # start and stop times for each block
-function time_params(mass; kwargs...)  
+function time_params(; kwargs...)  
     
+    mass = mass_A(; kwargs...)
     t_start = kwargs[:t_start]
     a0 = a_0(; kwargs...)
     F0 = sqrt(mass[3]/a0^3)/2/pi
@@ -56,11 +57,12 @@ function time_params(mass; kwargs...)
 
 end
 
-function initial_conditions(mass; kwargs...)
+function initial_conditions(; kwargs...)
     
     """
     Calculate the initial conditions for a Keplerian orbit with parameters a, e
     """
+    mass = mass_A(; kwargs...)
     mt = mass[3]
     a0 = a_0(; kwargs...)
     e0 = kwargs[:e0]

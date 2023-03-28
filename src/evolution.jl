@@ -10,12 +10,12 @@ using DifferentialEquations
 include("halo.jl")
 include("runparameters.jl")
 
-function Evolve(u0, initial, final, t_f, step_size; kwargs...)
+function Evolve(u0, initial, final, resolution; kwargs...)
     """
     Evolve the system of differential equations from t_start to t_end with nSteps with initial conditions u0
     """
     m = mass_A(; kwargs...)
-    tspan = (initial + t_f , final + t_f)    
+    tspan = (initial, final)    
     
     # Toggle forces
     dynamicalFriction = kwargs[:dynamicalFriction]
@@ -98,7 +98,7 @@ function Evolve(u0, initial, final, t_f, step_size; kwargs...)
     
     prob = ODEProblem(orbit!, u0, tspan, m, callback=terminate_cb)  # exclude the callback part when using lsoda()
     alg = VCABM() #lsoda() #AN5() #VCABM5() #Tsit5()  #DP5() #AutoVern7(Rodas5())  #Vern9(lazy=false) #Feagin12() #Vern7() 
-    @time sol = solve(prob, alg, abstol=1e-14, reltol=1e-12, saveat=collect(range(initial, final, step=step_size))[1:end-1] .+ t_f, dense=false, maxiters=Int(1e9))    # For predefined time-steps 
+    @time sol = solve(prob, alg, abstol=1e-14, reltol=1e-12, saveat=collect(range(initial, final, step=resolution))[1:end-1], dense=false, maxiters=Int(1e9))    # For predefined time-steps 
     #@time sol = solve(prob, alg, abstol=1e-14, reltol=1e-12, dense=true, maxiters=Int(1e9))                   # For adaptive time-steps
     return sol
 
