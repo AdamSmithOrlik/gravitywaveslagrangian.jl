@@ -7,6 +7,7 @@
 
 using PyCall
 
+# init method to define a python function in the julia context
 function __init__()
     py"""
     import numpy as np

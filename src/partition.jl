@@ -15,21 +15,36 @@ function run_partition(; kwargs...)
     
     """
     Inputs
-        n: Number of partitions that the code will attempt to split the evolution from a_initial to a_final into. 
-        The size of n is determined by estimating the total number of time steps igravq n the entire evolution by taking 
-        the product of the number of orbits and the time steps per orbit (norbits and t_orbital respectivley) from 
-        the input dictionary and dividing it by n. 
-    
-        If norbits is not large enough for the evolution to terminate at a_final the code will terminate early.
+        positional args: none.
     
         kwagrs: Input dictionary including mass of binary object, luminosity distance, conditions for evolutions,
         flags for adding or removing forces, properties of the dark matter halo including rho_0 and relativisitc 
         corrections, etc. 
-    
-    Ouput
-        hdf5 file with folder to save all the input parameters as attributes of a folder "Input Parameters" as well
-        as the t, r, dr, phi, dphi array solution from the evolve function for each block in the format: parameter->
-        partition number->data array
+
+    Ouputs
+        An h5 file is created where the input dictionary is saved in the Input parameters folder as attributes. A Run report folder will contain the 
+        status of the run, along with key information like the total time of evolution, the partitions, the resolution and so on. Finally the gravity
+        waves folder contains the frequency and the strain of the total evolution, whether complete or continued. 
+
+    Functionality
+
+        PARTITIONING
+        The run partition function splits up the integration domains for the evolution of the binary system to reduce the RAM pressure of the
+        orbital computation in the Evolve function. It does so by defining the number of partitions, n, to split the computation into as the number
+        of steps, dt, between t_start and t_end. 
+
+        dt determines the time equivalent size of each partition. If this value is greater than 0.1 the RAM becomes greater than 30GBs. 
+
+        The code will then partition the runs into blocks of size dt and solve given initial conditions from the block prior, adding to the 
+        characteristic strain function and saving orbital information if requested by setting save_orbital_data to true in the dictionary. 
+
+        NB: saving orbital data becomes a file size issue for evolutions that persist longer than 1e4 years. If one needs orbital data for 
+        long evolutions, it is suggested to set the orbital_resolution parameter to a larger value i.e. 1e-3.
+
+        CONTINUED CODE
+        If the code does not complete the evolution in the timespan entered, i.e. the termination condition is not met in the number of partitions
+        allocated, all of the data is saved into the h5 file, and if the evolution is run again the code will start where it left off. 
+ 
     
     """
 #------------------------------------------#
@@ -109,7 +124,12 @@ function run_partition(; kwargs...)
     if continued_run
         # load all input parameters
         a = h5open(filename) 
-            nparts = length(a["t"])
+# TEST
+            # nparts = length(a["t"])
+            # if orbital data is not saved the above will not work...
+            # can retreive the npartis from the partitions attribute 
+            nparts = read_attribute(a["Run report"],"Partitions")
+            
             last = string(nparts)
             start = nparts + 1
         

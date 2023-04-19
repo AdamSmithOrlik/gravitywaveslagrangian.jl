@@ -13,11 +13,11 @@ export run
 
 run_dictionary = Dict(
     # Name of hdf5 produced 
-    :Run_name=>"test_strain",  
+    :Run_name=>"script_test",  
 
     # Beginning and end radius of inpiral 
     :a_initial=>8.0,  # initial radius in units of r_isco
-    :a_final=>5.0,      # final radius in units of r_isco (where integration stops)
+    :a_final=>6.0,      # final radius in units of r_isco (where integration stops)
         
     # System Parameters 
     :Mbh=>1e5, # Black hole [Msol] 
@@ -34,7 +34,7 @@ run_dictionary = Dict(
     :dt=>0.005, # time steps between t_start and t_max, must be < t_max
 
     # orbital data 
-    :save_orbital_data=>true, # save the orbital arrays, if false only the strain is saved
+    :save_orbital_data=>false, # save the orbital arrays, if false only the strain is saved
     :orbital_resolution=>1e-6, # used to sample the full resolution arrays by steps round(orbit_res/time_res). Must be greater than time resolution
     
     # Forces included in insprial 
