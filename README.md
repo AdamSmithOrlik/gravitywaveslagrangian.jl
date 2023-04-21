@@ -7,9 +7,9 @@ The package contains one module--gravitywavelagrangian--contianed in the file gr
 
 There are two ways to run the code. 
 
-1) In the Julia REPL: In the terminal navigate to the root directory of the package and type $ julia. Inside the julia REPL type $ ] which changes to the package manager. Inside package manager do $ activate . and then hit backspace to go back to julia. Now compile the package with $ using gravitywaveslagrangian. After compilation you can do $ gravitywaveslagrangian.run() to run the code. 
+1) In the Julia REPL: In the terminal navigate to the root directory of the package and type $ julia. Inside the julia REPL type $ ] which changes to the package manager. Inside package manager do $ activate . and then hit backspace to go back to julia. Now compile the package with $ using gravitywaveslagrangian. After compilation you can do $ gravitywaveslagrangian.run() to run the code. The printed output will be displayed in the terminal and the outputted data will be saved to a file called <Run_name>.h5 in the data folder.
 
-2) Using a bash script: In the terminal navigate to the root directory of the package and locate the file run.sh. To run this file execute $ ./run.sh and the above steps will be run internally, with the output being piped to a file "output.txt".
+2) Using a bash script: In the terminal navigate to the root directory of the package and locate the file run.sh. To run this file execute $ ./run.sh and the above steps will be run internally, with the printed output being piped to a file "output.txt" and the data saved to a file called <Run_name>.h5 in the data folder.
 
 Input Parameters:
 Inside gravitywavelagrangian.jl there is a dictionary called "run_dictionary" including all the default parameters for the run. See the run_dictionary for definitions of each parameter, but the important ones are the following:
@@ -38,9 +38,9 @@ dfModel - Either Newtonian or Relativistic [3,5]
 rho0 - Normalization density for the DM model [3]
 
 Output:
-The run() method outputs periodic updates on the progress of the insprial including the radius--distant between bianries--as a function of the evolution time and whether or not the evolution has completed, i.e. the binaries have merged. 
+The run() method prints periodic updates on the progress of the insprial including the radius--distant between bianries--as a function of the evolution time and whether or not the evolution has completed, i.e. the binaries have merged. 
 
-Moreover, and hdf5 file will be created that contains the following folders: Input parameters, containing all inputted parameters from the input dictionary as attributes of the folder; Run report, which includes information about whether the evolution was successful, the start and stop radii, and how many partitions the insprial took; orbital parameters r, t, phi and derivitives dr and dphi are saved for each partition IF the save_orbital_data is set to true; final conditions which are passed to the differential solver and saved for each partition; and gravity waves, which include the calculated characteristic strain and the frequency calculated directly from the orbital data.  
+Moreover, and hdf5 file will be created in the data folder that contains the following folders: Input parameters, containing all inputted parameters from the input dictionary as attributes of the folder; Run report, which includes information about whether the evolution was successful, the start and stop radii, and how many partitions the insprial took; orbital parameters r, t, phi and derivitives dr and dphi are saved for each partition IF the save_orbital_data is set to true; final conditions which are passed to the differential solver and saved for each partition; and gravity waves, which include the calculated characteristic strain and the frequency calculated directly from the orbital data.  
 
 References:
 [1]: Our paper
