@@ -44,6 +44,9 @@ function run_partition(; kwargs...)
         CONTINUED CODE
         If the code does not complete the evolution in the timespan entered, i.e. the termination condition is not met in the number of partitions
         allocated, all of the data is saved into the h5 file, and if the evolution is run again the code will start where it left off. 
+    
+        NB: Currently (April 2023) the continued functionality does not work with the strain. This is due to the fact that it is
+        difficult to save the strain information between runs. This will be added in a later version. For now runs need to be given enough time to evolve in one run.
  
     
     """
