@@ -74,7 +74,8 @@ function rs_from_rhos(rhos, z_f)
     
     # find the exponent on M_vir by numerically finding the root of the function
     # mass_concentration_relation
-    res = find_zero(f, (1,14))
+    # res = find_zero(f, (1,14))
+    res = find_zero(f, 4)
     
     Mvir = 10.0^res
     rho_s, r_s =  mass_concentration_relation(Mvir, z_f)

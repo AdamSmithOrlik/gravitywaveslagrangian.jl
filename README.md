@@ -3,16 +3,21 @@
 Using the lagrangian frameowrk outlined in (arxiv:...) [1] we model the orbital inspiral of an intermediate mass-ratio black hole binary system consisting of a black hole (BH) and a compact object (CO) where the mass ratio BH/CO is >1 and <1e5 in the presence of a dark matter (DM) spike enveloping the system. In the frameowrk we consider the frist two post-Newtonian corrections and dynamical friction between the inspiraling bodies and the DM and calculate the characteristic strain observable by modern and next generation gravity wave (GW) detectors. Our analysis can be performed in a Newtonian or fully relativistic framework.
 
 Usage:
-The package contains one module--gravitywavelagrangian--contianed in the file gravitywavelagrangian.jl with one method--run()--that runs the inspiral with the input parameters defined in the run_dictionary also defined in gravitywavelagrangian.jl. 
+The package contains one module--gravitywavelagrangian--contianed in the file gravitywavelagrangian.jl with one method--run(:defualt_dictionary)--that runs the inspiral with the input parameters defined in the defualt_dictionary also defined in gravitywavelagrangian.jl. 
 
 There are two ways to run the code. 
 
-1) In the Julia REPL: In the terminal navigate to the root directory of the package and type $ julia. Inside the julia REPL type $ ] which changes to the package manager. Inside package manager do $ activate . and then hit backspace to go back to julia. Now compile the package with $ using gravitywaveslagrangian. After compilation you can do $ gravitywaveslagrangian.run() to run the code. The printed output will be displayed in the terminal and the outputted data will be saved to a file called <Run_name>.h5 in the data folder.
+1) In the Julia REPL: In the terminal navigate to the root directory of the package and type $ julia. Inside the julia REPL type $ ] which changes to the package manager. Inside package manager do $ activate . and then hit backspace to go back to julia. Now compile the package with $ using gravitywaveslagrangian. After compilation you can do $ gravitywaveslagrangian.run(:<your dictionary name>) to run the code. The printed output will be displayed in the terminal and the outputted data will be saved to a file called <Run_name>.h5 in the data folder where <Run name> 
+is defined in the input dictionary.
 
-2) Using a bash script: In the terminal navigate to the root directory of the package and locate the file run.sh. To run this file execute $ ./run.sh and the above steps will be run internally, with the printed output being piped to a file "output.txt" and the data saved to a file called <Run_name>.h5 in the data folder.
+2) Using a bash script: In the terminal navigate to the root directory of the package and locate the file run.sh. To run this file execute $ ./run.sh and the above steps will be run internally, with the printed output being piped to a file "output.txt" and the data saved to a file called <Run_name>.h5 in the data folder where <Run name> is defined in the input dictionary.
+
+NOTE: To make your own run, copy the default_dictionary and change the name along with the parameters of your choice. Then add the dictionaries 
+name to the list in the run() function. If you are running your own dictionary, be sure to change the command in run.sh to "gravitywaveslagrangian.run(:<your dictionary name>)". The code will then evaluation the dictionary name and cross-check that it is defined in the gravitywaveslagrangian scope and then evaluate it as a normal dictionary. 
 
 Input Parameters:
-Inside gravitywavelagrangian.jl there is a dictionary called "run_dictionary" including all the default parameters for the run. See the run_dictionary for definitions of each parameter, but the important ones are the following:
+Inside gravitywavelagrangian.jl there is a dictionary called "default_dictionary" including all the default parameters for the run. The input
+parameters are defined in the default_dictionary, with the important ones listed below. 
 
 Run_name - the name assigned to the hdf5 file that is created for the run
 a_initial - The initial separation between the binary objects in multiples of r_isco (r_isco = 6 * Mbh[pc] O(1e-14))
