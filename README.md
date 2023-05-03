@@ -1,6 +1,6 @@
 # gravitywaveslagrangian.jl
 
-# Gravitational wave signal from intermediate mass-ration inspiral of a black hole and a compact object using a novel Lagrangian method
+# Gravitational wave signal from intermediate mass-ratio inspiral of a black hole and a compact object using a novel Lagrangian method
 Using the lagrangian frameowrk outlined in (arxiv:...) [1] we model the orbital inspiral of an intermediate mass-ratio black hole binary system consisting of a black hole (BH) and a compact object (CO) where the mass ratio BH/CO is >1 and <1e5 in the presence of a dark matter (DM) spike enveloping the system. In the frameowrk we consider the frist two post-Newtonian corrections and dynamical friction between the inspiraling bodies and the DM and calculate the characteristic strain observable by modern and next generation gravity wave (GW) detectors. Our analysis can be performed in a Newtonian or fully relativistic framework.
 
 # How to use the julia package 
