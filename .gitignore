@@ -24,4 +24,8 @@ docs/site/
 Manifest.toml
 
 # data files
-data/*.h5
+data/old/
+
+__pycache__/
+*.py[cod]
+
