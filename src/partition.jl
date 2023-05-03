@@ -164,6 +164,7 @@ function run_partition(; kwargs...)
     lengths = 0
     freq = 0
     final_strain = 0
+    size_of_strain_array = 0
     
     # Partitioning 
     for i in start:nmax
@@ -247,6 +248,9 @@ function run_partition(; kwargs...)
             waveform = strain2d(u_new, t, r, phi; kwargs...)
             freq, s  = strainFFT2d(t, waveform, lisa_bandwidth)
             strain = zeros(ComplexF64, length(s))
+            size_of_strain_array = length(strain)
+            # size_s = length(s)
+            # println("Size of strain array is now: $size_s")
             strain .+= s
             
             # first element of the lengths array
@@ -257,6 +261,13 @@ function run_partition(; kwargs...)
                 waveform = strain2d(u_new, t, r, phi; kwargs...)
                 f, s = strainFFT2d(t, waveform, lisa_bandwidth)
                 # add to strain as a superpositon of waveforms 
+                # size_s = length(s)
+                # println("Size of strain array is now: $size_s")
+                if length(s) != size_of_strain_array
+                    s = s[1:size_of_strain_array]
+                end
+                size_s = length(s)
+                println("Size after check: $size_s")
                 strain .+= s
                 # add length of waveform to lengths array
                 push!(lengths, length(waveform))
@@ -354,200 +365,3 @@ function run_partition(; kwargs...)
     
 end # function end 
 
-# function run_partition(; kwargs...)
-    
-#     """
-#     Inputs
-#         n: Number of partitions that the code will attempt to split the evolution from a_initial to a_final into. 
-#         The size of n is determined by estimating the total number of time steps in the entire evolution by taking 
-#         the product of the number of orbits and the time steps per orbit (norbits and t_orbital respectivley) from 
-#         the input dictionary and dividing it by n. 
-    
-#         If norbits is not large enough for the evolution to terminate at a_final the code will terminate early.
-    
-#         kwagrs: Input dictionary including mass of binary object, luminosity distance, conditions for evolutions,
-#         flags for adding or removing forces, properties of the dark matter halo including rho_0 and relativisitc 
-#         corrections, etc. 
-    
-#     Ouput
-#         hdf5 file with folder to save all the input parameters as attributes of a folder "Input Parameters" as well
-#         as the t, r, dr, phi, dphi array solution from the evolve function for each block in the format: parameter->
-#         partition number->data array
-    
-#     """
-#     # conversions
-#     hz_to_invpc = 1.029e8
-#     year_to_pc = 0.3064
-#     D = kwargs[:D]
-    
-#     # mass 
-#     mass = mass_A(; kwargs...)
-#     mt = mass[3]
-#     Mbh = kwargs[:Mbh]
-    
-#     # time parameters 
-#     t_start = kwargs[:t_start]
-#     t_end = kwargs[:t_max] * year_to_pc # maximum time set for evolution in pc 
-#     dt = 0.01 # dt > 0.1 uses > 30GB of memory allocation 
-    
-#     # time step array to pass to evolve 
-#     partitions = range(t_start, t_end, step=dt)
-#     n = length(partitions)
-#     println("Maximum partitions: " * string(n))
-    
-#     # resolution of the solution output arrays 
-#     resolution = kwargs[:time_resolution]
-#     # if resolution is > dt the solver defaults to a preset resolution for the output array 
-#     if resolution >= dt
-#        throw(DomainError(resolution, " must be less than ", dt)) 
-#     end
-
-#     # directory 
-#     data_directory = pwd() * "/data/"
-#     isdir(data_directory) ? nothing : mkdir(data_directory)
-
-#     run_name = kwargs[:Run_name]
-#     filename = data_directory * run_name * "_insprial_data.h5"
-    
-#     # risco 
-#     risco = r_isco(; kwargs...)
-    
-#     # Limits of integration in multiples of r_isco
-#     a_initial = kwargs[:a_initial]
-#     a_final = kwargs[:a_final]
-    
-#     # termination condition 
-#     r_terminate = a_final*risco
-    
-#     steps = 0 # tracks total time steps 
-
-#     evolution_complete = false
-#     nmax = n 
-    
-#     # Partitioning 
-#     for i in 1:n
-        
-#         if i == 1
-            
-#             println("BEGIN PARTITIONING")
-#             println("Evolution begins at " * string(a_initial) * " risco and is set to terminate at " * string(a_final) * " risco" )
-            
-#             # creates an hdf5 with the input parametes for the run
-#             # "w" will overwrite any hdf5 with the same filename 
-#             h5open(filename, "w") do f 
-#                 # initilize folders for later use 
-#                 create_group(f, "t")
-#                 create_group(f, "r")
-#                 create_group(f, "dr")
-#                 create_group(f, "phi")
-#                 create_group(f, "dphi")
-#                 create_group(f, "final conditions")
-#                 create_group(f, "Run report")
-#                 # create a folder to hold all input parameters as attributes
-#                 g = create_group(f, "Input parameters")
-#                 for (k,v) in kwargs
-#                     attrs(g)[string(k)]=v
-#                 end # for loop for attributes
-#                 println("hdf5 data file initiliazed...")
-#             end # hdf5 writer
-            
-#         end # if statement
-
-#         # Load initial conditions from the mass array 
-#         if i == 1
-#             # if first block, calculate initial conditions and create a folder to store them
-#             u0 = initial_conditions(; kwargs...) 
-#         else
-#             # read in the initial conditions 
-#             f = h5open(filename,"r")
-#             u0 = read(f["final conditions"][string(i-1)]) # i-1 becasue it uses final conditions of the previous block as the new initial conditions 
-#             close(f)
-#         end # if statement to load IC
-        
-#         # Evolution
-#         initial = partitions[i]
-#         final = partitions[i+1]
- 
-#         # println(initial)
-#         # println(final)
-#         solution = Evolve(u0, initial, final, resolution; kwargs...)
-        
-#         # Saving results 
-#         t, r, phi, dr, dphi = [ solution.t,  solution'[:,1], solution'[:,2], solution'[:,3], solution'[:,4] ] 
-        
-#         # saving memory by erasing future unused arrays
-#         solution = nothing
-        
-#         t_elemenets = length(t)
-#         dt_total = t[2] - t[1]
-#         steps += length(t)
-        
-#         #saving the new final conditions
-#         u_new = [r[end], phi[end], dr[end], dphi[end]]
-        
-#         a_end = round(r[end]/risco, digits=2)
-#         time_elapsed = round(t[end]/year_to_pc, digits=2)
-        
-#         println("Partition $i evolution complete at $steps total time steps")
-#         println("Radius of inspiral has reached $a_end risco")
-#         println("Time elapsed since beginning of evolution: $time_elapsed")
-    
-#         # check if evolution have complete 
-#         if r[end] <= r_terminate
-#             evolution_complete = true
-#         end
-        
-#         # Save data 
-#         h5open(filename, "cw") do f             
-#             # write datasets for each partition i 
-#             write(create_dataset(f["t"], string(i), Float64, (length(t),)), t) 
-#             write(create_dataset(f["r"], string(i), Float64, (length(r),)), r)
-#             write(create_dataset(f["dr"], string(i), Float64, (length(dr),)), dr)
-#             write(create_dataset(f["phi"], string(i), Float64, (length(phi),)), phi)
-#             write(create_dataset(f["dphi"], string(i), Float64, (length(dphi),)), dphi)
-#             write(create_dataset(f["final conditions"], string(i), Float64, (length(u_new),)), u_new)
-#         end # hdf5
-        
-                
-#         # Check if evolution is complete  
-#         if evolution_complete
-# #             println("Block number " * string(i) *" completed with "* string(t_elemenets) *" time elements at "* string(dt_total ) *" resolution")
-#             println("EVOLUTION COMPLETE")
-            
-#             # run report 
-#             h5open(filename, "cw") do f 
-#                 rep = f["Run report"]
-#                 attrs(rep)["Evolution"]="Success"
-#                 attrs(rep)["Partitions"]=i
-#                 attrs(rep)["Time step"]=dt
-#                 attrs(rep)["Total steps"]=steps
-#                 attrs(rep)["Time resolution"]=resolution
-#                 attrs(rep)["Final radius [r_isco]"]=a_end
-#             end # writing
-            
-#             break # exit loop if evolution is complete 
-            
-#         else
-#             println("CONTINUING EVOLUTION")
-#             println("------------------------------------------------------------")
-            
-#             # run report 
-#             if i == nmax
-#                 println("NOT ENOUGH ORBITS TO COMPLETE EVOLUTION.")
-#                 h5open(filename, "cw") do f 
-#                     rep = f["Run report"]
-#                     attrs(rep)["Evolution"]="Failed"
-#                     attrs(rep)["Partitions"]=i
-#                     attrs(rep)["Time step"]=dt
-#                     attrs(rep)["Total steps"]=steps
-#                     attrs(rep)["Time resolution"]=resolution
-#                     attrs(rep)["Final radius [r_isco]"]=a_end
-#                 end # writing 
-#             end # if condition 
-            
-#         end # evolution complete condition
-        
-            
-#     end # for loop 
-    
-# end # function end 
