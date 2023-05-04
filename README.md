@@ -41,6 +41,7 @@ postNewtonian - Flag for the first order PN correction
 
 dmModel - Either Newtonian (NFW+spike) or Relativistic (fully-relativistic spike model) [2]
 dfModel - Either Newtonian or Relativistic [3,5]
+plot_halo_model - Boolean used to plot the dark matter density profile of the spike model used in the inspiral calculation, compared with an NFW profile. 
 
 rho0 - Normalization density for the DM model [3]
 
