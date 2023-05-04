@@ -7,8 +7,7 @@
 ###############################
 
 using Roots
-# using PyCall
-# using SciPy
+using QuadGK
 
 include("cosmology.jl")
 
@@ -76,7 +75,7 @@ function rs_from_rhos(rhos, z_f)
     # mass_concentration_relation
     # res = find_zero(f, (1,14))
     res = find_zero(f, 4)
-    
+
     Mvir = 10.0^res
     rho_s, r_s =  mass_concentration_relation(Mvir, z_f)
     
@@ -199,12 +198,12 @@ function get_rsp(; kwargs...)
     function f(rh)
         rsp = 0.2*rh
         I(r) = 4 * pi .* rho_spike(r; rsp=rsp, kwargs...) .* r.^2 
-        LHS, err = SciPy.integrate.quad(I, 1e-6, rh) 
+        LHS, err = quadgk(I, 1e-6, rh) 
         RHS = 2 * Mbh .* solar_mass_to_pc 
         return LHS .- RHS
     end
     
-    rh = SciPy.optimize.newton(f, 1.0)
+    rh = find_zero(f, 1.0)
     return 0.2.*rh # rsp 
 end
 

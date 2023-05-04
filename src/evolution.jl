@@ -41,7 +41,8 @@ function Evolve(u0, initial, final, resolution; kwargs...)
         
         # choose dm model 
         if dmModel == "Newtonian"
-            rho = rho_spike(r; kwargs...)
+            rsp = get_rsp(; kwargs...)
+            rho = rho_spike(r; rsp=rsp, kwargs...)
         elseif dmModel == "Relativistic"
             rho = rho_relativistic(r; kwargs...)
         else
