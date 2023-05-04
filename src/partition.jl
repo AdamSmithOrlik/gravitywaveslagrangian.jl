@@ -98,7 +98,15 @@ function run_partition(; kwargs...)
     # Limits of integration in multiples of r_isco
     a_initial = kwargs[:a_initial]
     a_final = kwargs[:a_final]
-    
+
+#------------------------------------------#
+#              PLOT HALO MODEL             #
+#------------------------------------------#
+plot_halo_model = kwargs[:plot_halo_model] 
+if plot_halo_model
+    plot_dm_spike(; kwargs...)
+end
+
 #------------------------------------------#
 #       CHECK IF RUN IS CONTINUED          #
 #------------------------------------------#

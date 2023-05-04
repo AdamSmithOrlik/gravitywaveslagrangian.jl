@@ -57,6 +57,7 @@ defualt_dictionary = Dict(
     # DM halo model flags 
     :dmModel=>"Relativistic", # "Newtonian" or "Relativistic"
     :dfModel=>"Relativistic", # "Newtonian" or "Relativistic"
+    :plot_halo_model=>true,
     
     # Inital DM halo density and redshift from Eda et al. (arxiv:1408.3534)
     :rho0=> 3.8e-22 .* 7.071e8, # [g/cm^3 to 1/pc^2]
@@ -102,6 +103,7 @@ eda_dictionary = Dict(
     # DM halo model flags 
     :dmModel=>"Relativistic", # "Newtonian" or "Relativistic"
     :dfModel=>"Relativistic", # "Newtonian" or "Relativistic"
+    :plot_halo_model=>true,
     
     # Inital DM halo density and redshift from Eda et al. (arxiv:1408.3534)
     :rho0=> 3.8e-22 .* 7.071e8, # [g/cm^3 to 1/pc^2]
@@ -147,6 +149,7 @@ run0_dictionary = Dict(
     # DM halo model flags 
     :dmModel=>"Relativistic", # "Newtonian" or "Relativistic"
     :dfModel=>"Relativistic", # "Newtonian" or "Relativistic"
+    :plot_halo_model=>true,
     
     # Inital DM halo density and redshift from Eda et al. (arxiv:1408.3534)
     # :rho0=> 3.8e-22 .* 7.071e8, # [g/cm^3 to 1/pc^2]
@@ -195,6 +198,7 @@ run1_dictionary = Dict(
     # DM halo model flags 
     :dmModel=>"Relativistic", # "Newtonian" or "Relativistic"
     :dfModel=>"Relativistic", # "Newtonian" or "Relativistic"
+    :plot_halo_model=>true,
     
     # Inital DM halo density and redshift from Eda et al. (arxiv:1408.3534)
     # :rho0=> 3.8e-22 .* 7.071e8, # [g/cm^3 to 1/pc^2]
@@ -243,6 +247,7 @@ run2_dictionary = Dict(
     # DM halo model flags 
     :dmModel=>"Relativistic", # "Newtonian" or "Relativistic"
     :dfModel=>"Relativistic", # "Newtonian" or "Relativistic"
+    :plot_halo_model=>true,
     
     # Inital DM halo density and redshift from Eda et al. (arxiv:1408.3534)
     # :rho0=> 3.8e-22 .* 7.071e8, # [g/cm^3 to 1/pc^2]

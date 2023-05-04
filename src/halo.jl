@@ -8,6 +8,8 @@
 
 using Roots
 using QuadGK
+using Plots
+using Measures
 
 include("cosmology.jl")
 
@@ -251,4 +253,55 @@ function rho_relativistic(r; kwargs...)
     rho = rho_bar*(10^delta)*((rho0/0.3)^alpha)*((Mbh/1e6)^beta)*((a/20.0)^gamma)
 
     return rho
+end
+
+# Plotting the halo model 
+function plot_dm_spike(; kwargs...)
+    dmModel = kwargs[:dmModel]
+    runname = kwargs[:Run_name]
+    aini = kwargs[:a_initial]
+    afin = kwargs[:a_final]
+    risco = r_isco(; kwargs...)
+    
+    inspiral_range = risco .*[aini, afin]
+    x = collect(range(inspiral_range[1],inspiral_range[2],3))
+    ym = zeros(length(x))
+    yt = zeros(length(x))
+    
+    r_list = collect(10 .^ range(log10(risco), log10(1e8*risco), 10000)) # log spaced range 
+    # generate nfw density as reference density
+    rhonfw = [rho_nfw(r; kwargs...) for r in r_list]
+    # generate the spike model density
+    if dmModel == "Newtonian"
+        rsp = get_rsp(; kwargs...)
+        rho = [rho_spike(r; rsp=rsp, kwargs...) for r in r_list]
+        model = "GS"
+    elseif dmModel == "Relativistic"
+        rho = [rho_relativistic(r; kwargs...) for r in r_list]
+        model = "Relativistic"
+    else
+        throw(DomainError(dmModel, "must be either 'Newtonian' or 'Relativistic'."))
+    end
+
+    # remove all negative values 
+    rho_length = length(rho)
+    rho = filter(x -> x >= 0, rho)
+    rho_length_filtered = length(rho)
+    start = (rho_length-rho_length_filtered) + 1
+    
+   # plot the results 
+    plot(r_list[start:end], rho, xscale=:log10, yscale=:log10, left_margin=10mm, right_margin=10mm, xlabel="r [pc]", ylabel="Density [1/pc^2]",labelfontsize=6,framestyle=:box, label="Spike Model")
+    plot!(r_list, rhonfw, xscale=:log10, yscale=:log10, label="NFW profile")
+    vline!(inspiral_range, linecolor=:grey, linestyle=:dash, label=nothing)
+    ymin, ymax = ylims()
+    ym .= ymin
+    yt .= ymax
+    plot!(x, ym, fillrange = yt, fillalpha = 0.1, c =:black, label="Inspiral Range")
+    title!("$model Spike Model for $runname",  titlefont=font(10))
+
+    data_directory = pwd() * "/data/"
+     isdir(data_directory) ? nothing : mkdir(data_directory)
+ 
+     filename = data_directory * runname * ".png"
+    savefig(filename)
 end
