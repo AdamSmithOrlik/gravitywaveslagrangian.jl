@@ -263,7 +263,7 @@ function plot_dm_spike(; kwargs...)
     afin = kwargs[:a_final]
     risco = r_isco(; kwargs...)
     
-    inspiral_range = risco .*[aini, afin]
+    inspiral_range = [aini, afin]
     x = collect(range(inspiral_range[1],inspiral_range[2],3))
     ym = zeros(length(x))
     yt = zeros(length(x))
@@ -290,14 +290,14 @@ function plot_dm_spike(; kwargs...)
     start = (rho_length-rho_length_filtered) + 1
     
    # plot the results 
-    plot(r_list[start:end], rho, xscale=:log10, yscale=:log10, left_margin=10mm, right_margin=10mm, xlabel="r [pc]", ylabel="Density [1/pc^2]",labelfontsize=6,framestyle=:box, label="Spike Model")
-    plot!(r_list, rhonfw, xscale=:log10, yscale=:log10, label="NFW profile")
+    plot(r_list[start:end] ./risco, rho, xscale=:log10, yscale=:log10, left_margin=10mm, right_margin=10mm, xlabel="r/risco", ylabel="Density [1/pc^2]",labelfontsize=6,framestyle=:box, label="Spike Model")
+    plot!(r_list ./risco, rhonfw, xscale=:log10, yscale=:log10, label="NFW profile")
     vline!(inspiral_range, linecolor=:grey, linestyle=:dash, label=nothing)
     ymin, ymax = ylims()
     ym .= ymin
     yt .= ymax
     plot!(x, ym, fillrange = yt, fillalpha = 0.1, c =:black, label="Inspiral Range")
-    title!("$model Spike Model for $runname",  titlefont=font(10))
+    title!("$model Spike Model for $runname",  titlefont=font(8))
 
     data_directory = pwd() * "/data/"
      isdir(data_directory) ? nothing : mkdir(data_directory)

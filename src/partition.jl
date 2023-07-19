@@ -275,7 +275,7 @@ end
                     s = s[1:size_of_strain_array]
                 end
                 size_s = length(s)
-                println("Size after check: $size_s")
+                # println("Size after check: $size_s")
                 strain .+= s
                 # add length of waveform to lengths array
                 push!(lengths, length(waveform))
